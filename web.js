@@ -100,5 +100,18 @@ function handle_facebook_request(req, res) {
   }
 }
 
+function handle_songs_request(req, res){
+  req.facebook.app(function(app) {
+    req.facebook.me(function(user) {
+      res.render('songs/index.ejs', {
+        layout:    true,
+        songs:     ['one.mp3', 'two.mp3'],
+        user: user
+      });
+    });
+  });
+}
+
 app.get('/', handle_facebook_request);
 app.post('/', handle_facebook_request);
+app.get('/songs', handle_songs_request);
