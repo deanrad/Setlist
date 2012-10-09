@@ -121,8 +121,12 @@ app.use(function(req, res, next){
   // the status option, or res.statusCode = 404
   // are equivalent, however with the option we
   // get the "status" local available as well
-  if( req.url.indexOf('running') > -1){
+  var url = req.url.toLowerCase().replace(' ', '');
+  if( url.indexOf('running') > -1){
     res.redirect('/running.html');
+  }
+  else if( url.indexOf('deepfreeze') > -1){
+    res.redirect('/DeepFreeze.mp3');
   }
   else{
     res.render('404.ejs', {title: "404 - Page Not Found", layout: false, showFullNav: false, status: 404, url: req.url}); 
