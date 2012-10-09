@@ -121,7 +121,7 @@ app.use(function(req, res, next){
   // the status option, or res.statusCode = 404
   // are equivalent, however with the option we
   // get the "status" local available as well
-  var url = req.url.toLowerCase().replace(' ', '');
+  var url = unescape(req.url).toLowerCase().replace(' ', '');
   if( url.indexOf('running') > -1){
     res.redirect('/running.html');
   }
