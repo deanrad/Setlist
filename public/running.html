@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>ChiRuns Running Pace Calculator</title>
+	<!-- script type="text/javascript" charset="utf-8" src="cordova-1.7.0.js"></script -->
+	<script type="text/javascript" charset="utf-8" src="js/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="js/knockout-2.1.0.min.js"></script>
+	<script type="text/javascript">
+	$(document).bind('mobileinit',
+		function(){
+			//allow placeholders + cool stuff -maybe just on android eventually ?
+			//$.mobile.selectmenu.prototype.options.nativeMenu = false; 	
+		}
+	);
+
+	// This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
+  function AppViewModel() {
+      var self = this;
+		  
+		  self.repeats = ko.observable(1);
+		  self.mph = ko.observable(6.0); 
+      self.dist_text = ko.observable("1 Mile");
+		  self.recovery_time = ko.observable(0.0); 
+      
+      self.distance_factor = ko.computed( function(){
+        if( self.dist_text() == "1 Mile" ) return 16/16;
+        if( self.dist_text() == "1600 M" ) return 16/16;
+        if( self.dist_text() == "1200 M" ) return 12/16;
+        if( self.dist_text() == "1000 M" ) return 10/16;
+        if( self.dist_text() == "800 M" )  return 8/16;
+        if( self.dist_text() == "600 M" )  return 6/16;
+        if( self.dist_text() == "400 M" )  return 4/16;
+        if( self.dist_text() == "200 M" )  return 2/16;
+        return 1.0;
+      });
+		  
+      self.pace = ko.computed( function(){ return (60 / self.mph()) * self.distance_factor() })
+
+      self.formatTime = function (t){
+        var minutes = Math.floor( t );
+        var realmin = (minutes % 60);
+        var mintext =  (minutes > 60) ?  Math.floor(minutes / 60) + ":" + ((""+realmin).length == 1 ? "0"+realmin : realmin) : minutes;
+        
+        var seconds = Math.round( 60 * (t-minutes) );
+        seconds = (""+seconds).length == 1 ? "0"+seconds : seconds;
+        return mintext + ":" + seconds;
+      }
+      
+      self.pace_in_minutes = ko.computed( function(){
+        return self.formatTime( self.pace() );
+      });
+      
+      
+      self.inc_repeats = function(){ self.repeats( self.repeats()+1 ) };
+      self.dec_repeats = function(){ self.repeats( self.repeats()-1 ) };
+      self.total_time = ko.computed( function(){ 
+        return self.formatTime( self.repeats() * ( self.pace() + self.recovery_time()/60 ) );
+      });
+  }
+  	
+	$(document).bind('pageinit', function(){
+		
+		viewmodel = new AppViewModel();
+		
+		ko.applyBindings(viewmodel);
+		//this, nor the knockout default bindings actually update the slider
+		//$("#slider").val(25)  //need to chain .slider('refresh') to update it
+	});
+	ko.bindingHandlers.slideValue = {
+		init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+	        $(element).bind('change', function(){ 
+	        	// Per knockout docs, valueAccessor is.. "A JavaScript function that you can call
+	        	// to get the current model property that is involved in this binding"	
+	        	valueAccessor()( $(this).val() )
+	       	});
+		},
+	    update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+	    	//alert('updating')
+	        $(element).val( ko.utils.unwrapObservable(valueAccessor()) ).slider("refresh");
+	    }
+	};
+	</script>
+	<script type="text/javascript" charset="utf-8" src="js/jquery.mobile-1.1.0.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="stylesheets/jquery.mobile-1.1.0.min.css" />
+	<style type="text/css">
+    .bigbold { font-family:sans-serif; font-size:4em; font-weight:bold }
+</style>
+</head>
+<body>
+
+<div data-role="page">
+	<div data-role="header">
+		<h1>ChiRuns Running Pace Calc</h1>
+	</div>
+
+	<div data-role="content">
+		<div data-role="fieldcontain" >
+		   <div>
+  		   <label for="pace">Repeats:</label>
+  		   <input type="range" name="repeats" id="repeats" min="1" max="30"
+  		      data-bind="slideValue: repeats" />
+     		 <!--button data-bind="click: dec_repeats">-</button>
+  		   <button data-bind="click: inc_repeats">+</button -->
+      </div>
+		</div>
+		<div data-role="fieldcontain" >
+      <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+        <legend>Interval Distance</legend>
+        <label for="m1600">1 Mile</label>
+       	<input id="m1600" type="radio" name="dist_text" value="1 Mile" data-bind="checked: dist_text" checked="true"/>
+        <label for="m1200">1200 M</label>
+       	<input id="m1200" type="radio" name="dist_text" value="1200 M" data-bind="checked: dist_text" />
+        <label for="m1000">1000 M</label>
+       	<input id="m1000" type="radio" name="dist_text" value="1000 M" data-bind="checked: dist_text" />
+        <label for="m800">800 M</label>
+       	<input id="m800" type="radio" name="dist_text" value="800 M" data-bind="checked: dist_text" />
+        <label for="m400">400 M</label>
+       	<input id="m400" type="radio" name="dist_text" value="400 M" data-bind="checked: dist_text" />
+        <label for="m200">200 M</label>
+       	<input id="m200" type="radio" name="dist_text" value="200 M" data-bind="checked: dist_text" />
+      </fieldset>
+    </div>
+ 		<div data-role="fieldcontain" >
+      <div>
+  		   <label for="pace">Recovery Time (sec):</label>
+  		   <input type="range" name="recovery" id="recovery" min="0" max="600" step="1"
+  		      data-bind="slideValue: recovery_time" />
+       </div>
+		</div>
+		<div data-role="fieldcontain" >
+		   <div>
+  		   <label for="pace">Speed (MPH):</label>
+  		   <input type="range" name="pace" id="pace" min="4.0" max="12.0" step=".1"
+  		      data-bind="slideValue: mph, valueUpdate:'change'" />
+       </div>
+		</div>
+	  <div>
+	    <span class="bigbold"><span id="pace" data-bind="text: pace_in_minutes"></span> Pace</span>
+	    <br/>
+	    <span class="bigbold"><span id="total" data-bind="text: total_time"></span> Total</span>
+	  </div>
+		<div data-bind="text: ko.toJSON(viewmodel)" style="position:relative; top:50px"></div>
+	</div>
+</body>
+</html>
