@@ -20,8 +20,9 @@
 		  self.repeats = ko.observable(1);
 		  self.mph = ko.observable(6.0); 
       self.dist_text = ko.observable("1 Mile");
-		  self.recovery_time = ko.observable(0.0); 
-      
+		  self.rest = ko.observable(0.0); 
+		  self.elapsed = ko.observable(0.0); 
+		        
       self.distance_factor = ko.computed( function(){
         if( self.dist_text() == "1 Mile" ) return 16/16;
         if( self.dist_text() == "1600 M" ) return 16/16;
@@ -34,8 +35,6 @@
         return 1.0;
       });
 		  
-      self.pace = ko.computed( function(){ return (60 / self.mph()) * self.distance_factor() })
-
       self.formatTime = function (t){
         var minutes = Math.floor( t );
         var realmin = (minutes % 60);
@@ -46,16 +45,48 @@
         return mintext + ":" + seconds;
       }
       
-      self.pace_in_minutes = ko.computed( function(){
-        return self.formatTime( self.pace() );
+      self.pace = ko.computed( function(){ return (60 / self.mph()) * self.distance_factor() })
+      
+      self.total_time = ko.computed( function(){ 
+        return self.repeats() * ( self.pace() + self.rest()/60 );
       });
       
-      
+      self.remaining = ko.computed( function(){
+        return self.total_time() - self.elapsed();
+      });
+
+      self.pace_fmt = ko.computed( function(){ return self.formatTime( self.pace() ); });
+      self.total_time_fmt = ko.computed( function(){ return self.formatTime( self.total_time() ); });
+      self.remaining_fmt = ko.computed( function(){ return self.formatTime( self.remaining() ); });
+
       self.inc_repeats = function(){ self.repeats( self.repeats()+1 ) };
       self.dec_repeats = function(){ self.repeats( self.repeats()-1 ) };
-      self.total_time = ko.computed( function(){ 
-        return self.formatTime( self.repeats() * ( self.pace() + self.recovery_time()/60 ) );
-      });
+      self.tick        = function(){
+        self.elapsed( self.elapsed() + 1.0/60.0 )
+        
+        //only go so far
+        if( self.remaining() <= 0.0 ){
+          self.end_workout();
+          alert('Workout complete !')
+        }
+      }
+      self.start_workout = function(){
+        self.start_timer();
+        //$('input').attr('disabled', 'disabled') //sliders suck
+      }
+      self.end_workout = function(){
+        self.elapsed(0);
+        self.stop_timer();
+      }
+
+      self.start_timer = function(){
+        self.stopwatch = setInterval(function(){ 
+          self.tick();
+        }, 1000) 
+      }
+      self.stop_timer = function(){
+        clearInterval( self.stopwatch )
+      }
   }
   	
 	$(document).bind('pageinit', function(){
@@ -125,7 +156,7 @@
       <div>
   		   <label for="pace">Recovery Time (sec):</label>
   		   <input type="range" name="recovery" id="recovery" min="0" max="600" step="1"
-  		      data-bind="slideValue: recovery_time" />
+  		      data-bind="slideValue: rest" />
        </div>
 		</div>
 		<div data-role="fieldcontain" >
@@ -136,9 +167,15 @@
        </div>
 		</div>
 	  <div>
-	    <span class="bigbold"><span id="pace" data-bind="text: pace_in_minutes"></span> Pace</span>
+	    <div data-role="controlgroup" data-type="horizontal">
+  	    <button data-bind="click:start_workout">Start Workout</button>
+  	    <button data-bind="click:end_workout">Cancel</button>
+	    </div>
+	    <span class="bigbold"><span id="pace" data-bind="text: pace_fmt"></span> Pace</span>
 	    <br/>
-	    <span class="bigbold"><span id="total" data-bind="text: total_time"></span> Total</span>
+	    <span class="bigbold"><span id="total" data-bind="text: total_time_fmt"></span> Total</span>
+	    <br/>
+	    <span class="bigbold"><span id="remaining" data-bind="text: remaining_fmt"></span> Remaining</span>
 	  </div>
 		<div data-bind="text: ko.toJSON(viewmodel)" style="position:relative; top:50px"></div>
 	</div>
