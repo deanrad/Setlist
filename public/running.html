@@ -67,6 +67,7 @@
         //only go so far
         if( self.remaining() <= 0.0 ){
           self.end_workout();
+          $("#whistle").get(0).play();
           alert('Workout complete !')
         }
       }
@@ -177,6 +178,9 @@
 	    <br/>
 	    <span class="bigbold"><span id="remaining" data-bind="text: remaining_fmt"></span> Remaining</span>
 	  </div>
+
+    <audio id="whistle" src="https://s3.amazonaws.com/chicagogrooves.com/sounds/whistle_rest.mp3"></audio>​
+  	  
 		<div data-bind="text: ko.toJSON(viewmodel)" style="position:relative; top:50px"></div>
 	</div>
 </body>
