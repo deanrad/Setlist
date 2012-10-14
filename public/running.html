@@ -66,13 +66,19 @@
         
         //only go so far
         if( self.remaining() <= 0.0 ){
+          // console.log("- begin - playing sound")
+          self.play_sound();
+          // console.log("- end - playing sound")
           self.end_workout();
-          $("#whistle").get(0).play();
-          alert('Workout complete !')
+          //alert('Workout complete !')
         }
       }
       self.start_workout = function(){
         self.start_timer();
+        self.play_sound = function(){
+          self.sound_player = $("#whistle").get(0);
+          self.sound_player.play();
+        }
         //$('input').attr('disabled', 'disabled') //sliders suck
       }
       self.end_workout = function(){
