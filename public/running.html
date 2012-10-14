@@ -92,7 +92,8 @@
         }, 1000) 
       }
       self.stop_timer = function(){
-        clearInterval( self.stopwatch )
+        clearInterval( self.stopwatch );
+        self.play_sound();
       }
   }
   	
