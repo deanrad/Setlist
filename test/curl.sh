@@ -6,5 +6,9 @@ curl --head http://chicagogrooves.herokuapp.com/rUnNinG | grep 'Location: .*/run
 curl --head http://chicagogrooves.herokuapp.com/deepfreeze | grep 'Location: .*/DeepFreeze.mp3'
 curl --head http://chicagogrooves.herokuapp.com/deep%20freeze | grep 'Location: .*/DeepFreeze.mp3'
 curl --head http://chicagogrooves.herokuapp.com/uprising | grep 'Location: .*/Uprising.pdf'
+curl -i http://chicagogrooves.herokuapp.com/upr | grep 'Uprising.pdf'
 
-echo "All tests pass for chicagogrooves.herokuapp.com/"
+echo "
+-------
+SUCCESS  All tests pass for chicagogrooves.herokuapp.com/
+"
