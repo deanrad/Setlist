@@ -12,11 +12,11 @@
     Try <a href="somewhere://<%= path %>">here.</a>
     </pre>
     
-    <ul>
-    <%- matches.map( function(m){
-      return "<li><a href='" + m.path + "'>" + m.path + "</a></li>";
-    }).join() %>
-    </ul>
-  </body>
+    <%- "\n<ul class='matches'>\n" + 
+        matches.map( function(m){
+          return " <li>\n  <a href='" + m.path + "'>" + m.path + "</a>\n </li>";
+        }).join("\n") +
+        "\n</ul>" %>
+\  </body>
 </html>
 
