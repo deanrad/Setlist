@@ -118,17 +118,22 @@ app.get('/songs', handle_songs_request);
 
 //my custom 404 thing
 app.use(function(req, res, next){
-  // the status option, or res.statusCode = 404
-  // are equivalent, however with the option we
-  // get the "status" local available as well
-  var url = unescape(req.url).toLowerCase().replace(' ', '');
-  if( url.indexOf('running') > -1){
-    res.redirect('/running.html');
-  }
-  else if( url.indexOf('joggling') > -1 ){ res.redirect('http://www2.brightroom.com/107440/5574'); }
+  var url = unescape(req.url).toLowerCase().replace(' ', '').slice(1);
+
+  if( url.indexOf('running') > -1)        { res.redirect('/running.html'); }
+  else if( url.indexOf('joggling') > -1 ) { res.redirect('http://www2.brightroom.com/107440/5574'); }
   else if( url.indexOf('deepfreeze') > -1){ res.redirect('/DeepFreeze.mp3'); }
-  else if( url.indexOf('uprising') > -1){ res.redirect('/songs/Uprising.pdf'); }
+  else if( url.indexOf('uprising') > -1)  { res.redirect('/songs/Uprising.pdf'); }
   else{
-    res.render('404.ejs', {title: "404 - Page Not Found", layout: false, showFullNav: false, status: 404, url: req.url, path: req.url}); 
+    var matches = [];
+    readdirp( { root: './public' }, function(entry){
+        if( entry.path.toLowerCase().indexOf( url ) > -1){
+          matches.push( { path: entry.path, size: entry.stat.size } );
+        }
+      }, function (err, resp) {
+          res.render('404.ejs', {title: "404 - Page Not Found", matches: matches, layout: false, showFullNav: false, status: 404, url: req.url, path: req.url}); 
+      }
+    );
+
   }
 });

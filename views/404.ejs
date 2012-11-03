@@ -11,6 +11,8 @@
     Not found :(
     Try <a href="somewhere://<%= path %>">here.</a>
     </pre>
+    
+    <%= matches.map( function(m){ return m.path } ).join() %>
   </body>
 </html>
 
