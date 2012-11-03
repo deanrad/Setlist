@@ -127,7 +127,7 @@ app.use(function(req, res, next){
   }
   else if( url.indexOf('joggling') > -1 ){ res.redirect('http://www2.brightroom.com/107440/5574'); }
   else if( url.indexOf('deepfreeze') > -1){ res.redirect('/DeepFreeze.mp3'); }
-  else if( url.indexOf('uprising') > -1){ res.redirect('/songs/Uprising.mp3'); }
+  else if( url.indexOf('uprising') > -1){ res.redirect('/songs/Uprising.pdf'); }
   else{
     res.render('404.ejs', {title: "404 - Page Not Found", layout: false, showFullNav: false, status: 404, url: req.url}); 
   }
