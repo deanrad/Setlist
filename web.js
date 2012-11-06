@@ -122,8 +122,6 @@ app.use(function(req, res, next){
 
   if( url.indexOf('running') > -1)        { res.redirect('/running.html'); }
   else if( url.indexOf('joggling') > -1 ) { res.redirect('http://www2.brightroom.com/107440/5574'); }
-  else if( url.indexOf('deepfreeze') > -1){ res.redirect('/DeepFreeze.mp3'); }
-  else if( url.indexOf('uprising') > -1)  { res.redirect('/songs/Uprising.pdf'); }
   else{
     var matches = [];
     readdirp( { root: './public' }, function(entry){
