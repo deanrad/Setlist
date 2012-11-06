@@ -15,7 +15,7 @@
     
     <%- "\n<ul class='matches'>\n" + 
         matches.map( function(m){
-          return " <li>\n  <a href='" + m.path + "'>" + m.path + "</a>\n </li>";
+          return " <li>\n  <a href='/" + m.path + "'>" + m.path + "</a>\n </li>";
         }).join("\n") +
         "\n</ul>" %>
   </body>

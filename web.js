@@ -131,7 +131,7 @@ app.use(function(req, res, next){
           matches.push( { path: entry.path, size: entry.stat.size } );
         }
       }, function (err, resp) {
-          res.render('404.ejs', {title: "404 - Page Not Found", matches: matches, layout: false, showFullNav: false, status: 404, url: req.url, path: req.url}); 
+          res.render('404.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 404, url: req.url, path: req.url}); 
       }
     );
 
