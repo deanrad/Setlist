@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" manifest="<%= path.replace(/\/$/g, '') + ".appcache" %>">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
@@ -7,7 +7,7 @@
     <title><%= title %></title>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 	<script src="//s3.amazonaws.com/chicagogrooves.com/js/mediaelement-and-player.min.js"></script>
-	<link rel="stylesheet" href="//s3.amazonaws.com/chicagogrooves.com/stylesheets/mediaelementplayer.min.css" />
+	<link rel="stylesheet" href="//s3.amazonaws.com/chicagogrooves.com/stylesheets/mp/mediaelementplayer.min.css" />
   </head>
   <body>
     <pre>
@@ -26,6 +26,41 @@
         }).join("\n") +
         "\n</ul>" %>
 	
+	<script type="text/javascript">
+	$(function (jQuery) {
+	    // make an array for the mediaelement players
+	    var mediaElementPlayers = new Array();
+
+	    // run mediaelement.js (Ignore options)
+	    jQuery('audio').mediaelementplayer({
+	        iPadUseNativeControls: false,
+	        iPhoneUseNativeControls: false,
+	        AndroidUseNativeControls: false,
+	        pauseOtherPlayers: true,
+	        success: function (mediaElement, domObject) {
+	            // add this mediaelement to the mediaElementPlayers array
+	            mediaElementPlayers.push(mediaElement);
+	            //console.log(mediaElement);
+	            mediaElement.addEventListener('ended', function (e) {
+	                playNext(e.target);
+	            }, false);
+	        },
+	        keyActions: []
+	    })
+
+	    // find the current player and start playing the following player
+	    function playNext(currentPlayer) {
+	        for (i = 0; i < mediaElementPlayers.length; i++) {
+	            if (mediaElementPlayers[i] == currentPlayer) {
+	                if (mediaElementPlayers[i + 1] == undefined) { // If this is the last player Start from the beginning
+	                    //mediaElementPlayers[0].play();
+	                } else { // Start the next player
+	                    mediaElementPlayers[i + 1].play();
+	                }
+	            }
+	        }
+	    }
+	});	</script>
   </body>
 </html>
 
