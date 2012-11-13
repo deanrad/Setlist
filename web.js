@@ -26,6 +26,40 @@ app.listen(port, function() {
   console.log("Listening on " + port);
 });
 
+app.get('/', handle_facebook_request);
+app.post('/', handle_facebook_request);
+
+//my custom 404 thing
+app.use(function(req, res, next){
+  var url = unescape(req.url).toLowerCase().replace(' ', '').slice(1);
+
+  if( url.indexOf('running') > -1)        { res.redirect('/running.html'); }
+  else if( url.indexOf('joggling') > -1 ) { res.redirect('http://www2.brightroom.com/107440/5574'); }
+  else{
+    var matches = [];
+    readdirp( { root: './public' }, function(entry){
+        if( entry.path.toLowerCase().indexOf( url ) > -1 ){
+          if( entry.path.indexOf('.appcache') > -1 ){
+            //dont show
+          }
+          else if( entry.path.indexOf('.youtube') > -1 ){
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path), subtype: "video/youtube" } );
+          }
+          else if( entry.path.indexOf('.mp3.s3') > -1 ){
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path) } );
+          }
+          else{
+            matches.push( { name: entry.path, path: '/'+entry.path } );
+          }
+        }
+      }, function (err, resp) {
+          res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
+      }
+    );
+
+  }
+});
+
 app.dynamicHelpers({
   'host': function(req, res) {
     return req.headers['host'];
@@ -101,49 +135,4 @@ function handle_facebook_request(req, res) {
   }
 }
 
-function handle_songs_request(req, res){
-  req.facebook.app(function(app) {
-    req.facebook.me(function(user) {
-      res.render('songs/index.ejs', {
-        layout:    true,
-        songs:     ['one.mp3', 'two.mp3'],
-        user: user
-      });
-    });
-  });
-}
 
-app.get('/', handle_facebook_request);
-app.post('/', handle_facebook_request);
-app.get('/songs', handle_songs_request);
-
-//my custom 404 thing
-app.use(function(req, res, next){
-  var url = unescape(req.url).toLowerCase().replace(' ', '').slice(1);
-
-  if( url.indexOf('running') > -1)        { res.redirect('/running.html'); }
-  else if( url.indexOf('joggling') > -1 ) { res.redirect('http://www2.brightroom.com/107440/5574'); }
-  else{
-    var matches = [];
-    readdirp( { root: './public' }, function(entry){
-        if( entry.path.toLowerCase().indexOf( url ) > -1 ){
-          if( entry.path.indexOf('.appcache') > -1 ){
-            //dont show
-          }
-          else if( entry.path.indexOf('.youtube') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path), subtype: "video/youtube" } );
-          }
-          else if( entry.path.indexOf('.mp3.s3') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path) } );
-          }
-          else{
-            matches.push( { name: entry.path, path: '/'+entry.path } );
-          }
-        }
-      }, function (err, resp) {
-          res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
-      }
-    );
-
-  }
-});
