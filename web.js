@@ -127,7 +127,7 @@ app.use(function(req, res, next){
     readdirp( { root: './public' }, function(entry){
         if( entry.path.toLowerCase().indexOf( url ) > -1  &&
             entry.path.indexOf('.appcache') == -1) {
-          matches.push( { path: entry.path, size: entry.stat.size } );
+          matches.push( { name: entry.path, path: entry.path, size: entry.stat.size } );
         }
       }, function (err, resp) {
           res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 

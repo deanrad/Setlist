@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
 
     <title><%= title %></title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="//s3.amazonaws.com/chicagogrooves.com/js/mediaelement-and-player.min.js"></script>
+	<link rel="stylesheet" href="//s3.amazonaws.com/chicagogrooves.com/stylesheets/mediaelementplayer.min.css" />
   </head>
   <body>
     <pre>
-    Not found :(
+    No exact match found for '<%= path %>'
     </pre>
 
     Perhaps you meant one of these ? 
@@ -16,13 +19,13 @@
     <%- "\n<ul class='matches'>\n" + 
         matches.sort( function(a,b){ return (a.path == b.path) ? 0 : (a.path > b.path) ? 1 : -1})
                .map( function(m){
-          return " <li>\n  <a href='/" + m.path + "'>" + m.path + "</a>\n </li>";
+          return " <li>\n" + 
+                 "  <a href='/" + m.path + "'>" + m.name + "</a>\n" + 
+				 "  <audio src='/" + m.path + "' type='audio/mp3' controls='controls'></audio>\n" +
+                 " </li>";
         }).join("\n") +
         "\n</ul>" %>
-
 	
-	<!-- maybe eventually make playable as easy as adding:
-	    script type="text/javascript" src="//webplayer.yahooapis.com/player.js"></script -->
   </body>
 </html>
 
