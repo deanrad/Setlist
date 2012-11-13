@@ -1,8 +1,9 @@
-var async   = require('async');
-var express = require('express');
-var util    = require('util');
-var fs      = require('fs');
+var async    = require('async');
+var express  = require('express');
+var util     = require('util');
+var fs       = require('fs');
 var readdirp = require('readdirp'); 
+var chomp    = require('chomp');
 
 // create an express webserver
 var app = express.createServer(
@@ -43,10 +44,10 @@ app.use(function(req, res, next){
             //dont show
           }
           else if( entry.path.indexOf('.youtube') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path), subtype: "video/youtube" } );
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), subtype: "video/youtube" } );
           }
           else if( entry.path.indexOf('.mp3.s3') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path) } );
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp() } );
           }
           else{
             matches.push( { name: entry.path, path: '/'+entry.path } );

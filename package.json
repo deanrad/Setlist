@@ -9,7 +9,8 @@
     "ejs":       "0.4.3",
     "express":   "2.4.6",
     "faceplate": "0.0.4",
-    "readdirp": "0.1.4"
+    "readdirp": "0.1.4",
+    "chomp": "0.0.1"
   },
 
   "engines": {
