@@ -20,8 +20,11 @@
         matches.sort( function(a,b){ return (a.path == b.path) ? 0 : (a.path > b.path) ? 1 : -1})
                .map( function(m){
           return " <li>\n" + 
-                 "  <a href='/" + m.path + "'>" + m.name + "</a>\n" + 
-				 "  <audio src='/" + m.path + "' type='audio/mp3' controls='controls' preload='metadata'></audio>\n" +
+                 "  <a href='" + m.path + "'>" + m.name + "</a>\n" + 
+                 ((m.subtype) ?
+                 "" :
+                 // "  <video controls='controls' preload='metadata'><source src='" + m.path + "' type='video/youtube'></source></video>\n" :
+                 "  <audio src='" + m.path + "' type='audio/mp3' controls='controls' preload='metadata'></audio>\n") +
                  " </li>";
         }).join("\n") +
         "\n</ul>" %>
@@ -31,7 +34,6 @@
 	    // make an array for the mediaelement players
 	    var mediaElementPlayers = new Array();
 
-	    // run mediaelement.js (Ignore options)
 	    jQuery('audio').mediaelementplayer({
 	        iPadUseNativeControls: false,
 	        iPhoneUseNativeControls: true,
@@ -60,7 +62,8 @@
 	            }
 	        }
 	    }
-	});	</script>
+	});	
+	</script>
   </body>
 </html>
 

@@ -1,6 +1,7 @@
 var async   = require('async');
 var express = require('express');
 var util    = require('util');
+var fs      = require('fs');
 var readdirp = require('readdirp'); 
 
 // create an express webserver
@@ -125,9 +126,19 @@ app.use(function(req, res, next){
   else{
     var matches = [];
     readdirp( { root: './public' }, function(entry){
-        if( entry.path.toLowerCase().indexOf( url ) > -1  &&
-            entry.path.indexOf('.appcache') == -1) {
-          matches.push( { name: entry.path, path: entry.path, size: entry.stat.size } );
+        if( entry.path.toLowerCase().indexOf( url ) > -1 ){
+          if( entry.path.indexOf('.appcache') > -1 ){
+            //dont show
+          }
+          else if( entry.path.indexOf('.youtube') > -1 ){
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path), subtype: "video/youtube" } );
+          }
+          else if( entry.path.indexOf('.mp3.s3') > -1 ){
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path) } );
+          }
+          else{
+            matches.push( { name: entry.path, path: '/'+entry.path } );
+          }
         }
       }, function (err, resp) {
           res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
