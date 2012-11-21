@@ -10,7 +10,9 @@
     "express":   "2.4.6",
     "faceplate": "0.0.4",
     "readdirp": "0.1.4",
-    "chomp": "0.0.1"
+    "chomp": "0.0.1",
+    "restler": "2.0.1",
+	"xml2js": "0.2.2"
   },
 
   "engines": {
