@@ -1,5 +1,5 @@
 require 'optparse'
-require 'yaml' # for debugging
+require 'pp' # 'yaml' # for debugging
 
 class Parser
   attr_accessor :banner, :version
