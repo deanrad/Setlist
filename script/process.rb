@@ -8,15 +8,22 @@ options = Parser.new do |p|
 
   p.option :artist, "Artist", :default => ""
   p.option :title, "Song title pattern - Use \\f for filename, \\a for artist", :default => "\\f"
-  p.option :album, "Album title pattern - Use \\d for dirname", :short =>"l", :default => "Rehearsal \\d"
+  p.option :album, "Album title pattern - Use \\d for dirname", :short =>"l", :default => "\\a Rehearsal \\d"
 end.process!
 
 # - build up data structure from givens/defaults (filename -> map of tags)
-file_opts = ARGV.inject({}) do |all_files, filename|
-  all_files[filename] = {
-    :title => options[:title].gsub( /\\f/, File.basename(filename) ),
+track_num=0
+file_opts = ARGV.inject([]) do |all_files, filename|
+  all_files << {
+    :filename => filename,
+    :title => options[:title].
+      gsub( /\\f/, File.basename(filename, '.*').gsub(/([a-z])[ _\-]?([A-Z])/, '\1 \2') ),
     :artist => options[:artist],
-    :album => options[:album].gsub( /\\d/, File.split( File.split(filename)[0] )[1] ),
+    :track => (track_num += 1),
+    :album => options[:album].
+      gsub( /\\d/, File.split( File.split(filename)[0] )[1] ).
+      gsub( /\\a/, options[:artist]),
+    :comments => "Original: #{filename}"
   }
   all_files
 end
