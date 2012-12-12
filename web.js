@@ -59,16 +59,7 @@ app.use(function(req, res, next){
       },
       // on completion  
 	  function (err, resp) {
-		//HACK calling amazon inline, everytime
-		rest.get('https://nevergoback.s3.amazonaws.com/').on('complete', function(data){
-		  data.ListBucketResult.Contents.map( function(e){ 
-			var uri = e.Key[0].toString();
-			uri = 'https://nevergoback.s3.amazonaws.com/' + uri;
-			if( uri.toLowerCase().indexOf(url) > -1)
-				matches.push( {name: uri, path: uri } );
-		  })
-          res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
-		})
+        res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
       }
     );
 
