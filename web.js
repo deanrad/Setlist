@@ -4,6 +4,7 @@ var util     = require('util');
 var fs       = require('fs');
 var readdirp = require('readdirp'); 
 var chomp    = require('chomp');
+var rest     = require('restler');
 
 // create an express webserver
 var app = express.createServer(
@@ -38,7 +39,9 @@ app.use(function(req, res, next){
   else if( url.indexOf('joggling') > -1 ) { res.redirect('http://www2.brightroom.com/107440/5574'); }
   else{
     var matches = [];
-    readdirp( { root: './public' }, function(entry){
+    readdirp( { root: './public' }, 
+      //on a directory entry 
+      function(entry){
         if( entry.path.toLowerCase().indexOf( url ) > -1 ){
           if( entry.path.indexOf('.appcache') > -1 ){
             //dont show
@@ -53,8 +56,19 @@ app.use(function(req, res, next){
             matches.push( { name: entry.path, path: '/'+entry.path } );
           }
         }
-      }, function (err, resp) {
+      },
+      // on completion  
+	  function (err, resp) {
+		//HACK calling amazon inline, everytime
+		rest.get('https://nevergoback.s3.amazonaws.com/').on('complete', function(data){
+		  data.ListBucketResult.Contents.map( function(e){ 
+			var uri = e.Key[0].toString();
+			uri = 'https://nevergoback.s3.amazonaws.com/' + uri;
+			if( uri.toLowerCase().indexOf(url) > -1)
+				matches.push( {name: uri, path: uri } );
+		  })
           res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
+		})
       }
     );
 
