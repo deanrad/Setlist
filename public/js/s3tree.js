@@ -90,9 +90,9 @@ function parse(xmlDoc) {
     var e = keys[i].firstChild.nodeValue;
     
     // only interested in some folders
-    if (e.indexOf("/./") < 0
-        && e.search(/_\$folder\$/) == -1
-        && e.search(/.DS_store/) == -1)
+    //if (e.indexOf("/./") < 0
+    //    && e.search(/_\$folder\$/) == -1
+    //    && e.search(/.DS_store/) == -1)
       data.push(e);
   }  
   return data;
@@ -119,8 +119,6 @@ function init(){
 		var request = window.XMLHttpRequest
 			? new XMLHttpRequest()
 			: new ActiveXObject("Microsoft.XMLHTTP");
-      debugger;
-
 
 		var suffix = starting_from ? '&marker=' + starting_from : '';
 		request.open("GET", url + '?max-keys=300' + suffix, true);
@@ -128,7 +126,6 @@ function init(){
 		request.onreadystatechange = function(){
 			if (request.readyState == 4 && request.status == 200) {
 				if (request.responseXML){
-          debugger;
 
 					var last_page = (request.responseXML
 									 .getElementsByTagName('IsTruncated')[0]
