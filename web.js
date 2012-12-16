@@ -52,7 +52,7 @@ app.use(function(req, res, next){
           else if( entry.path.indexOf('.mp3.s3') > -1 ){
             matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp() } );
           }
-          else{
+          else if( entry.path.indexOf('.pdf') == -1 ){
             matches.push( { name: entry.path, path: '/'+entry.path } );
           }
         }
