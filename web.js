@@ -47,19 +47,22 @@ app.use(function(req, res, next){
             //dont show
           }
           else if( entry.path.indexOf('.youtube') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), subtype: "video/youtube" } );
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime, subtype: "video/youtube" } );
           }
           else if( entry.path.indexOf('.mp3.s3') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp() } );
+            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime } );
           }
           else{
-            matches.push( { name: entry.path, path: '/'+entry.path } );
+            matches.push( { name: entry.path, path: '/'+entry.path, mtime: entry.stat.mtime } );
           }
         }
       },
       // on completion  
 	  function (err, resp) {
-        res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
+	      var sorted = matches.sort( function(a,b){
+	        return a.mtime - b.mtime;
+	      });
+        res.render('search.ejs', {title: "Search Results for " + url , matches: sorted, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
       }
     );
 
