@@ -60,9 +60,9 @@ app.use(function(req, res, next){
       // on completion  
 	  function (err, resp) {
 	      var sorted = matches.sort( function(a,b){
-	        return a.mtime - b.mtime;
+            a.path.localeCompare(b.path);
 	      });
-        res.render('search.ejs', {title: "Search Results for " + url , matches: sorted, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
+        res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
       }
     );
 
