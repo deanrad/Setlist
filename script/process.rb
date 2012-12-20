@@ -28,7 +28,7 @@ end
 
 def build_tags options
   # - build up data structure from givens/defaults (filename -> map of tags)
-  track_num=0
+  track_num=1
   whole_dir = File.directory?(ARGV[0]) && ARGV[0]
   dir_files = whole_dir ? `ls -1rt #{whole_dir}/*.*`.split("\n") : ARGV
   wav_files = dir_files.select{ |f| f =~ /\.wav$/i }
@@ -38,11 +38,11 @@ def build_tags options
     fp = Pathname.new(mp3name)
     this_track = {
       :wavname => filename,
-      :mp3name => mp3name,
+      :mp3name => fp.dirname.to_s + "/" + ("%02d" % track_num) + "_" + fp.basename.to_s,
       :title => options[:title].
         gsub( /\\f/, File.basename(filename, '.*').gsub(/([a-z])[ _\-]?([A-Z])/, '\1 \2') ),
       :artist => options[:artist],
-      :track => (track_num += 1).to_s + "/" + track_count.to_s,
+      :track => track_num.to_s + "/" + track_count.to_s,
       :album => options[:album].
         gsub( /\\d/, File.split( File.split(filename)[0] )[1] ).
         gsub( /\\a/, options[:artist]),
@@ -50,6 +50,7 @@ def build_tags options
       :comments => "Original: #{filename}"
     }
     all_files << this_track
+    track_num += 1
     all_files
   end
 end
