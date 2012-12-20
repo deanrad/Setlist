@@ -69,6 +69,17 @@ app.use(function(req, res, next){
   }
 });
 
+app.helpers({
+  'render_match': function(m){
+    var audio = " <audio src='" + m.path + "' type='audio/mp3' controls='controls' preload='metadata'></audio>";
+    return " <li>\n" + 
+           "  <a href='" + m.path + "'>" + m.name.replace( /\.s3$/, '') + "</a>\n" + 
+           (m.path.match( /\.mp3/i ) ? audio : "") + 
+           " </li>";
+  }
+});
+
+
 app.dynamicHelpers({
   'host': function(req, res) {
     return req.headers['host'];

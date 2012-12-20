@@ -15,16 +15,11 @@
     </pre>
 
     Perhaps you meant one of these ? 
-    
-    <%- "\n<ul class='matches'>\n" + 
-        matches.map( function(m){
-          return " <li>\n" + 
-                 "  <a href='" + m.path + "'>" + m.name + "</a>\n" + 
-                 //((m.subtype) ? "" : "  <video controls='controls' preload='metadata'><source src='" + m.path + "' type='video/youtube'></source></video>\n") +
-                 ((m.name.indexOf('.pdf') > -1) ? "" : "  <audio src='" + m.path + "' type='audio/mp3' controls='controls' preload='metadata'></audio>\n") +
-                 " </li>";
-        }).join("\n") +
-        "\n</ul>" %>
+    <ul class='matches'>
+    <%- 
+      matches.map( function(m){ return render_match(m); }).join("\n") 
+    %>
+    </ul>
 	
 	<script type="text/javascript">
 	$(function (jQuery) {
