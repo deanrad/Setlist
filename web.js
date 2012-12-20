@@ -50,7 +50,7 @@ app.use(function(req, res, next){
             matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime, subtype: "video/youtube" } );
           }
           else if( entry.path.indexOf('.mp3.s3') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime } );
+            matches.push( { name: entry.path, skey: '/'+entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime } );
           }
           else{
             matches.push( { name: entry.path, path: '/'+entry.path, mtime: entry.stat.mtime } );
@@ -59,8 +59,10 @@ app.use(function(req, res, next){
       },
       // on completion  
 	  function (err, resp) {
-	      var sorted = matches.sort( function(a,b){
-            a.path.localeCompare(b.path);
+	      matches.sort( function(a,b){
+	        var acmp = a.skey || a.path;
+	        var bcmp = b.skey || b.path;
+          return acmp.localeCompare(bcmp);
 	      });
         res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
       }
