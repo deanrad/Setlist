@@ -43,7 +43,7 @@ app.use(function(req, res, next){
       //on a directory entry 
       function(entry){
         if( entry.path.toLowerCase().indexOf( url ) > -1 ){
-          if( entry.path.indexOf('.appcache') > -1 ){
+          if( entry.path.indexOf('.appcache') > -1  || entry.path.indexOf('/_') > -1){
             //dont show
           }
           else if( entry.path.indexOf('.youtube') > -1 ){
