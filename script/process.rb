@@ -20,7 +20,7 @@ def doit! options
     pp file_tags 
     exit 0
   end
-  #tag_and_convert! file_tags
+  tag_and_convert! file_tags
   s3ify! file_tags
   # upload tagged mp3 to amazon, create local .mp3.s3 files with URL to s3
   # register/commit new files (git repo)
@@ -38,7 +38,8 @@ def build_tags options
     fp = Pathname.new(mp3name)
     this_track = {
       :wavname => filename,
-      :mp3name => fp.dirname.to_s + "/" + ("%02d" % track_num) + "_" + fp.basename.to_s,
+      :mp3name => mp3name,
+      :s3proxyname => fp.dirname.to_s + "/" + ("%02d" % track_num) + "_" + fp.basename.to_s,
       :title => options[:title].
         gsub( /\\f/, File.basename(filename, '.*').gsub(/([a-z])[ _\-]?([A-Z])/, '\1 \2') ),
       :artist => options[:artist],
@@ -77,7 +78,7 @@ end
 def s3ify! file_opts
   file_opts.each do |file|
     mp3file = file[:mp3name]
-    s3proxyfile = file[:mp3name]+".s3"
+    s3proxyfile = file[:s3proxyname]+".s3"
     
     File.open(s3proxyfile, "w") do |f|
       f.write file[:s3name]
