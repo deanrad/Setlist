@@ -47,21 +47,23 @@ app.use(function(req, res, next){
             //dont show
           }
           else if( entry.path.indexOf('.youtube') > -1 ){
-            matches.push( { name: entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime, subtype: "video/youtube" } );
+            var content = fs.readFileSync('./public/' + entry.path, "UTF8").chomp();
+            matches.push( { name: entry.path, path: entry.path, source: content, mtime: entry.stat.mtime, subtype: "video/youtube" } );
           }
           else if( entry.path.indexOf('.mp3.s3') > -1 ){
-            matches.push( { name: entry.path, skey: '/'+entry.path, path: fs.readFileSync('./public/' + entry.path, "UTF8").chomp(), mtime: entry.stat.mtime } );
+            var content = fs.readFileSync('./public/' + entry.path, "UTF8").chomp()
+            matches.push( { name: entry.path, path: entry.path, source: content, mtime: entry.stat.mtime } );
           }
           else{
-            matches.push( { name: entry.path, path: '/'+entry.path, mtime: entry.stat.mtime } );
+            matches.push( { name: entry.path, path: entry.path, source: '/'+entry.path, mtime: entry.stat.mtime } );
           }
         }
       },
       // on completion  
 	  function (err, resp) {
 	      matches.sort( function(a,b){
-	        var acmp = a.skey || a.path;
-	        var bcmp = b.skey || b.path;
+	        var acmp = a.name;
+	        var bcmp = b.name;
           return acmp.localeCompare(bcmp);
 	      });
         res.render('search.ejs', {title: "Search Results for " + url , matches: matches, layout: false, showFullNav: false, status: 200, url: req.url, path: req.url}); 
@@ -73,10 +75,15 @@ app.use(function(req, res, next){
 
 app.helpers({
   'render_match': function(m){
-    var audio = " <audio src='" + m.path + "' type='audio/mp3' controls='controls' preload='metadata'></audio>";
+    var audio = " <audio src='" + m.source + "' type='audio/mp3' controls='controls' preload='metadata'></audio>";
+    var video = "  <video controls='controls' preload='metadata'><source src='" + m.source + "' type='video/youtube'></source></video>\n";
+    var incaudio = m.path.match( /\.mp3/i );
+    var incvideo = (m.subtype == "video/youtube");
+    
     return " <li>\n" + 
            "  <a href='" + m.path + "'>" + m.name.replace( /\.s3$/, '') + "</a>\n" + 
-           (m.path.match( /\.mp3/i ) ? audio : "") + 
+           (incaudio ? audio : "") + 
+           (incvideo ? video : "") + 
            " </li>";
   }
 });
