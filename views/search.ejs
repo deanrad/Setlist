@@ -22,9 +22,11 @@
     </ul>
 	
 	<script type="text/javascript">
+	var mediaElementPlayers;
+	
 	$(function (jQuery) {
 	    // make an array for the mediaelement players
-	    var mediaElementPlayers = new Array();
+	    mediaElementPlayers = new Array();
 
 	    jQuery('audio,video').mediaelementplayer({
 	        iPadUseNativeControls: false,
@@ -47,7 +49,7 @@
 	        for (i = 0; i < mediaElementPlayers.length; i++) {
 	            if (mediaElementPlayers[i] == currentPlayer) {
 	                if (mediaElementPlayers[i + 1] == undefined) { // If this is the last player Start from the beginning
-	                    //mediaElementPlayers[0].play();
+	                    mediaElementPlayers[0].play();
 	                } else { // Start the next player
 	                    mediaElementPlayers[i + 1].play();
 	                }
