@@ -9,6 +9,7 @@ options = Parser.new do |p|
   p.option :artist, "Artist", :default => "Never Go Back"
   p.option :title, "Song title pattern - Use \\f for filename, \\a for artist", :default => "\\f"
   p.option :album, "Album title pattern - Use \\d for dirname", :short =>"l", :default => "Rehearsal \\d"
+  p.option :genre, "Genre", :default => "Rock"
   p.option :dry_run, "Dry run - only print what will be done", :default => false
   p.option :bitrate, "The encoding rate ala (default 128000)", :short => "ab", :default => "128000"
   p.option :bucket, "The amazon bucket to use", :default => "nevergoback"
@@ -45,6 +46,7 @@ def build_tags options
         gsub( /\\f/, File.basename(filename, '.*').gsub(/([a-z])[ _\-]?([A-Z])/, '\1 \2') ),
       :artist => options[:artist],
       :track => track_num.to_s + "/" + track_count.to_s,
+      :genre => options[:genre],
       :album => options[:album].
         gsub( /\\d/, File.split( File.split(filename)[0] )[1] ).
         gsub( /\\a/, options[:artist]),
@@ -58,20 +60,23 @@ def build_tags options
 end
 
 def tag_and_convert! file_opts
-  ffmpeg = 'ffmpeg -i #{filewav} -ab #{bitrate} -metadata title="#{title}" -metadata album="#{album}" -metadata artist="#{artist}" #{filemp3}'
   file_opts.each do |file|
     # HACK filenames w/ spaces still dont work too well
     filewav = file[:wavname].sub(' ', '\\ ') 
     filemp3 = file[:mp3name].sub(' ', '\\ ')
     artist = file[:artist]
     album = file[:album]
+    track = file[:track]
     title = file[:title]
+    genre = file[:genre]
     bitrate = file[:bitrate]
     overwrite = "-y"
-    convcmd = %Q(ffmpeg #{overwrite} -i #{filewav} -ab 128000 -metadata title="#{title}" -metadata album="#{album}" -metadata artist="#{artist}" #{filemp3})
+    convcmd = %Q(ffmpeg #{overwrite} -i #{filewav} -ab 128000 -metadata title="#{title}" -metadata album="#{album}" -metadata artist="#{artist}" -metadata track="#{track}" -metadata genre="#{genre}" #{filemp3})
     datemod = %Q(touch -r #{filewav} #{filemp3})
-    # $stderr.puts [convcmd, datemod].join("\n")
+    artisthack = %Q(id3tool --set-artist="#{artist}" #{filemp3})
+    $stderr.puts [convcmd, datemod].join("\n")
     system convcmd
+    system artisthack
     system datemod
   end
 end
