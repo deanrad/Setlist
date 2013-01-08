@@ -13,6 +13,7 @@ options = Parser.new do |p|
   p.option :bitrate, "The encoding rate ala (default 128000)", :short => "ab", :default => "128000"
   p.option :bucket, "The amazon bucket to use", :default => "nevergoback"
 end.process!
+raise ArgumentError, "Must tell me what to convert" unless ARGV.length > 0
 
 def doit! options
   file_tags = build_tags(options)
