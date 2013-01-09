@@ -79,9 +79,12 @@ app.helpers({
     var video = "  <video controls='controls' preload='metadata'><source src='" + m.source + "' type='video/youtube'></source></video>\n";
     var incaudio = m.path.match( /\.mp3/i );
     var incvideo = (m.subtype == "video/youtube");
-    
+
+	var disppath = (m.name.indexOf('s3') > -1) ? m.source : m.path ;
+    var dispname = m.name.replace( /\.s3$/, '');
+	
     return " <li>\n" + 
-           "  <a href='" + m.path + "'>" + m.name.replace( /\.s3$/, '') + "</a>\n" + 
+           "  <a href='" + disppath + "'>" + dispname + "</a>\n" + 
            (incaudio ? audio : "") + 
            (incvideo ? video : "") + 
            " </li>";
