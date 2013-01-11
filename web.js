@@ -30,6 +30,7 @@ app.listen(port, function() {
 
 app.get('/', handle_facebook_request);
 app.post('/', handle_facebook_request);
+app.get('/getzip.zip', handle_zipper)
 
 //my custom 404 thing
 app.use(function(req, res, next){
@@ -122,6 +123,11 @@ function render_page(req, res) {
       });
     });
   });
+}
+
+function handle_zipper(req, res) {
+	res.setHeader('Content-Type', 'text/html');
+	res.send(new Buffer('Coming soon: getting zip' + req.query.path));
 }
 
 function handle_facebook_request(req, res) {
