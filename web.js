@@ -2,9 +2,11 @@ var async    = require('async');
 var express  = require('express');
 var util     = require('util');
 var fs       = require('fs');
+var http     = require('http');
 var readdirp = require('readdirp'); 
 var chomp    = require('chomp');
 var rest     = require('restler');
+var AdmZip = require('adm-zip');
 
 // create an express webserver
 var app = express.createServer(
@@ -126,8 +128,45 @@ function render_page(req, res) {
 }
 
 function handle_zipper(req, res) {
+	var searchpath = req.query.path;
+	var url = unescape(searchpath).toLowerCase().replace(' ', '').slice(1);
+	
 	res.setHeader('Content-Type', 'text/html');
 	res.send(new Buffer('Coming soon: getting zip' + req.query.path));
+	
+	/*
+    var zip = new AdmZip();
+    readdirp( { root: './public' }, 
+      function(entry){
+		if( entry.path.toLowerCase().indexOf( url ) > -1 ){
+	      if( entry.path.indexOf('.mp3.s3') > -1 ){
+            var s3source = fs.readFileSync('./public/' + entry.path, "UTF8").chomp();
+			rest.get(s3source).on('complete', function(result) {
+			  if (result instanceof Error) {
+			  } else {
+				console.log("added s3 file " + s3source);
+			    var b = new Buffer(result);
+				zip.addFile(entry.path, b);
+			  }
+			});
+          }
+          else{
+			var contents = fs.readFileSync('./public/' + entry.path);
+			console.log("added local file " + entry.path);
+			var b = contents;
+            zip.addFile( entry.path, b );
+          }
+		}
+      },
+      // on completion  
+	  function (err, resp) {
+		console.log("sending zip");
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader('Content-Disposition', 'attachment; filename=funmusic.zip')
+        res.send(zip.toBuffer());
+      }
+    );	*/
+	
 }
 
 function handle_facebook_request(req, res) {
