@@ -87,7 +87,7 @@ app.helpers({
     var dispname = m.name.replace( /\.s3$/, '');
 	
     return " <li>\n" + 
-           "  <a href='" + disppath + "'>" + dispname + "</a>\n" + 
+           "  <a href=\"" + disppath + "\">" + dispname + "</a>\n" + 
            (incaudio ? audio : "") + 
            (incvideo ? video : "") + 
            " </li>";

@@ -43,7 +43,9 @@ def build_tags options
       :mp3name => mp3name,
       :s3proxyname => fp.dirname.to_s + "/" + ("%02d" % track_num) + "_" + fp.basename.to_s,
       :title => options[:title].
-        gsub( /\\f/, File.basename(filename, '.*').gsub(/([a-z])[ _\-]?([A-Z])/, '\1 \2') ),
+        gsub( /\\f/, File.basename(filename, '.*').
+        gsub(/([a-z])[ _\-]?([A-Z])/, '\1 \2') ).
+        gsub('_', ' '),
       :artist => options[:artist],
       :track => track_num.to_s + "/" + track_count.to_s,
       :genre => options[:genre],
