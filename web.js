@@ -78,7 +78,7 @@ app.use(function(req, res, next){
 
 app.helpers({
   'render_match': function(m){
-    var audio = " <audio src='" + m.source + "' type='audio/mp3' controls='controls' preload='metadata'></audio>";
+    var audio = " <audio src=\"" + m.source + "\" type='audio/mp3' controls='controls' preload='metadata'></audio>";
     var video = "  <video controls='controls' preload='metadata'><source src='" + m.source + "' type='video/youtube'></source></video>\n";
     var incaudio = m.path.match( /\.mp3/i );
     var incvideo = (m.subtype == "video/youtube");
