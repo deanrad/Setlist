@@ -11,17 +11,16 @@
   </head>
   <body>
     <pre>
-    No exact match found for '<%= path %>'
+    Showing results for '<%= path %>'
     </pre>
 
-	<a href="/getzip.zip?path=<%= path %>">Download all as zip</a>
-
-    Perhaps you meant one of these ? 
     <ul class='matches'>
     <%- 
       matches.map( function(m){ return render_match(m); }).join("\n") 
     %>
     </ul>
+
+	<a href="/getzip.zip?path=<%= path %>">Download all as zip (coming soon)</a>
 	
 	<script type="text/javascript">
 	var mediaElementPlayers;
