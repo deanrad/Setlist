@@ -84,12 +84,13 @@ app.helpers({
     var incvideo = (m.subtype == "video/youtube");
 
 	var disppath = (m.name.indexOf('s3') > -1) ? m.source : m.path ;
+	//var disppath = m.source;
     var dispname = m.name.replace( /\.s3$/, '');
     var dispshort = dispname.replace( /^.*\//, '');
 	
     return " <li>\n" + 
            "<span title=\"" + m.path + "\">" + dispshort + "</span>" +
-           "  <a title=\"" + disppath + "\" href=\"" + disppath + "\">Download</a>\n" + 
+           "  <a title=\"" + disppath + "\" href=\"" + m.source + "\">Download</a>\n" + 
            (incaudio ? audio : "") + 
            (incvideo ? video : "") + 
            " </li>";
