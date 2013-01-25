@@ -13,6 +13,7 @@ options = Parser.new do |p|
   p.option :dry_run, "Dry run - only print what will be done", :default => false
   p.option :bitrate, "The encoding rate ala (default 128000)", :short => "ab", :default => "128000"
   p.option :bucket, "The amazon bucket to use", :default => "nevergoback"
+  p.option :comment, "A note to add to the comment field after each song", :default => ""
 end.process!
 raise ArgumentError, "Must tell me what to convert" unless ARGV.length > 0
 
@@ -53,7 +54,7 @@ def build_tags options
         gsub( /\\d/, File.split( File.split(filename)[0] )[1] ).
         gsub( /\\a/, options[:artist]),
       :s3name => "http://#{options[:bucket]}.s3.amazonaws.com/#{fp.dirname.basename}/#{fp.basename}",
-      :comments => "Original: #{filename}"
+      :comment => "Original: #{filename}" + (options[:comment] && " \nNote: #{options[:comment]}")
     }
     all_files << this_track
     track_num += 1
@@ -72,6 +73,7 @@ def tag_and_convert! file_opts
     title = file[:title]
     genre = file[:genre]
     bitrate = file[:bitrate]
+    comment = file[:comment]
     overwrite = "-y"
     convcmd = %Q(ffmpeg #{overwrite} -i #{filewav} -ab 128000 -metadata title="#{title}" -metadata album="#{album}" -metadata author="#{artist}" -metadata track="#{track}" -metadata genre="#{genre}" #{filemp3})
     datemod = %Q(touch -r #{filewav} #{filemp3})
