@@ -4,6 +4,10 @@ Setlist is a utility for organizing a bands rehearsal recordings, charts, and ot
 primary philosophy is one of inferred organization - you put things up in the most natural way
 for you, and Setlist presents your content in an accessible, linked, utilitarian format.
 
+Note: This is NOT an example of my finest coding, rather a set of utilitarian
+hacks that do in fact help my band, but are really selfishly designed for me 
+to get in-and-out as quickly as possible. That said - read on !
+
 Lets suppose that after each rehearsal, you put WAV or MP3 files into a folder such as 2011_02_10.
 
     2011_02_10/
