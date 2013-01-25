@@ -73,12 +73,10 @@ def tag_and_convert! file_opts
     genre = file[:genre]
     bitrate = file[:bitrate]
     overwrite = "-y"
-    convcmd = %Q(ffmpeg #{overwrite} -i #{filewav} -ab 128000 -metadata title="#{title}" -metadata album="#{album}" -metadata artist="#{artist}" -metadata track="#{track}" -metadata genre="#{genre}" #{filemp3})
+    convcmd = %Q(ffmpeg #{overwrite} -i #{filewav} -ab 128000 -metadata title="#{title}" -metadata album="#{album}" -metadata author="#{artist}" -metadata track="#{track}" -metadata genre="#{genre}" #{filemp3})
     datemod = %Q(touch -r #{filewav} #{filemp3})
-    artisthack = %Q(id3tool --set-artist="#{artist}" #{filemp3})
     $stderr.puts [convcmd, datemod].join("\n")
     system convcmd
-    system artisthack
     system datemod
   end
 end
